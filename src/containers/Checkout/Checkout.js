@@ -7,7 +7,7 @@ import ContactData from './ContactData/ContactData';
 class Checkout extends Component{
     state = {
         ingredients: null,
-        price: 0
+        totalPrice: 0
     }
 
     componentWillMount() {
@@ -16,8 +16,8 @@ class Checkout extends Component{
         const ingredients = {};
         let price = 0;
         for ( let param of query ) {
-            if(param[0] === 'price'){
-                price = param[1]
+            if (param[0] === 'price') {
+                price = +param[1]
             } else {
                 ingredients[param[0]] = +param[1]
             }
@@ -32,7 +32,6 @@ class Checkout extends Component{
 
     onCheckoutContinued = () => {
         this.props.history.replace('/checkout/contact-data');
-        console.log(this.state.totalPrice)
     }
 
     render(){

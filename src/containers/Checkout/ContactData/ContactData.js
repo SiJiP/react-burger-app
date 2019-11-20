@@ -21,8 +21,8 @@ class ContactData extends Component{
         this.setState({ loading: true });
 
         const order = {
-            ingredients: this.state.ingredients,
-            price: this.state.price,
+            ingredients: this.props.ingredients,
+            price: this.props.price.toFixed(2),
             customer: {
                 name: 'Anton Petrov',
                 address: {
@@ -32,7 +32,7 @@ class ContactData extends Component{
                 },
                 email: 'test@test.com',
             },
-            deliveryMethod: 'fastest'
+            deliveryMethod: 'fastest',
         }
 
         axios.post('/orders.json', order)
