@@ -5,6 +5,7 @@ import axios from "../../../axios-orders";
 import Spinner from "../../../components/UI/Spinner/Spinner";
 import Input from "../../../components/UI/Input/Input";
 import FormConfig from "../../../formConfig";
+import { connect } from 'react-redux'
 
 class ContactData extends Component {
   state = {
@@ -25,7 +26,7 @@ class ContactData extends Component {
     }
 
     const order = {
-      ingredients: this.props.ingredients,
+      ingredients: this.props.ings,
       price: this.props.price.toFixed(2),
       orderData: formData
     };
@@ -80,12 +81,13 @@ class ContactData extends Component {
 
   render() {
     const formElementsArray = Object.keys(this.state.orderForm).reduce(
-      (accum, key) => (
-        [...accum,
-          { 
-            id: key,
-            config: this.state.orderForm[key]
-          }]),
+      (accum, key) => [
+        ...accum,
+        {
+          id: key,
+          config: this.state.orderForm[key]
+        }
+      ],
       []
     );
 
@@ -123,4 +125,9 @@ class ContactData extends Component {
   }
   }
 
-export default ContactData;
+  const mapstateToProps = state => ({
+    ings: state.ingredients,
+    price: state.totalPrice
+  })
+
+export default connect(mapstateToProps)(ContactData);
