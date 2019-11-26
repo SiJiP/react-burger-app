@@ -83,7 +83,7 @@ const formConfig = {
       ]
     },
     validation:{},
-    value: "",
+    value: "fastest",
     valid: true,
   }
 };

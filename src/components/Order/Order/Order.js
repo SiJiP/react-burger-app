@@ -3,13 +3,18 @@ import classes from './Order.module.scss'
 
 
 const order = (props) => {
-    const ingredients = Object.keys(props.ingredients)
-                              .reduce( (accum, keyName) => {
-                                return [...accum, {
-                                        name: keyName,
-                                        amount: props.ingredients[keyName]
-                                    }] 
-                            }, [])
+    const ingredients = Object.keys(props.ingredients).reduce(
+      (accum, keyName) => {
+        return [
+          ...accum,
+          {
+            name: keyName,
+            amount: props.ingredients[keyName]
+          }
+        ];
+      },
+      []
+    );
     const ingredientOutput = ingredients.map(ig => {
         return (
         <span 

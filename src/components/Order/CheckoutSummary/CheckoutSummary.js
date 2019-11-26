@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 import Burger from '../../Burger/Burger';
 import Button from '../../UI/Button/Button';
 import classes from './CheckoutSummary.module.scss'
