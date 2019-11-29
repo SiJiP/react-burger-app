@@ -27,11 +27,11 @@ class ContactData extends Component {
     const order = {
       ingredients: this.props.ings,
       price: this.props.price.toFixed(2),
-      orderData: formData
+      orderData: formData,
+      userId: this.props.userId
     };
 
-    this.props.onOrderBurger(order);
-
+    this.props.onOrderBurger(order, this.props.token);
   };
 
   inputChangedHandler = (event, inputIdentifier) => {
@@ -42,34 +42,50 @@ class ContactData extends Component {
       ...updatedOrderForm[inputIdentifier]
     };
     updatedFormElement.value = event.target.value;
-    updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation)
-    updatedFormElement.touched = true; 
+    updatedFormElement.valid = this.checkValidity(
+      updatedFormElement.value,
+      updatedFormElement.validation
+    );
+    updatedFormElement.touched = true;
     updatedOrderForm[inputIdentifier] = updatedFormElement;
 
     let formIsValid = true;
     Object.keys(updatedOrderForm).forEach(inputId => {
-      formIsValid = updatedOrderForm[inputId].valid && formIsValid
-    })
+      formIsValid = updatedOrderForm[inputId].valid && formIsValid;
+    });
 
     this.setState({ orderForm: updatedOrderForm, formIsValid: formIsValid });
   };
 
   checkValidity = (value, rules) => {
-      let isValid = true;
+    let isValid = true;
 
-      if(rules.required) {
-          isValid = value.trim() !== '' && isValid;
-      }
+    if (rules.required) {
+      isValid = value.trim() !== "" && isValid;
+    }
 
-      if(rules.minLength){
-          isValid = value.length >= rules.minLength && isValid
-      }
+    if (rules.minLength) {
+      isValid = value.length >= rules.minLength && isValid;
+    }
 
-      if(rules.maxLength){
-        isValid = value.length <= rules.maxLength && isValid
-      };
-      return isValid
-}
+    if (rules.maxLength) {
+      isValid = value.length <= rules.maxLength && isValid;
+    }
+
+    if (rules.isEmail) {
+      const pattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+      isValid = pattern.test(value) && isValid;
+    }
+
+    if (rules.isNumeric) {
+      const pattern = /^\d+$/;
+      isValid = pattern.test(value) && isValid;
+    }
+
+    return isValid;
+  };
+
+
 
   render() {
     const formElementsArray = Object.keys(this.state.orderForm).reduce(
@@ -87,20 +103,23 @@ class ContactData extends Component {
       <form onSubmit={this.orderHandler}>
         {formElementsArray.map(formElement => {
           return (
-          <Input
-            key={formElement.id}
-            elementType={formElement.config.elementType}
-            elementConfig={formElement.config.elementConfig}
-            value={formElement.config.value}
-            invalid={!formElement.config.valid}
-            touched = {formElement.config.touched}
-            errorMessage = {formElement.config.errorText}
-            shouldValidate={formElement.config.validation}
-            changed={event => this.inputChangedHandler(event, formElement.id)}
-          />
-        )})}
+            <Input
+              key={formElement.id}
+              elementType={formElement.config.elementType}
+              elementConfig={formElement.config.elementConfig}
+              value={formElement.config.value}
+              invalid={!formElement.config.valid}
+              touched={formElement.config.touched}
+              errorMessage={formElement.config.errorText}
+              shouldValidate={formElement.config.validation}
+              changed={event => this.inputChangedHandler(event, formElement.id)}
+            />
+          );
+        })}
 
-        <Button btnType="Success" disabled={ !this.state.formIsValid }>ORDER</Button>
+        <Button btnType="Success" disabled={!this.state.formIsValid}>
+          ORDER
+        </Button>
       </form>
     );
 
@@ -115,19 +134,23 @@ class ContactData extends Component {
       </div>
     );
   }
-  }
+}
 
-  const mapstateToProps = state => ({
-    ings: state.burgerBuilder.ingredients,
-    price: state.burgerBuilder.totalPrice,
-    loading: state.order.loading
-  })
+const mapstateToProps = state => ({
+  ings: state.burgerBuilder.ingredients,
+  price: state.burgerBuilder.totalPrice,
+  loading: state.order.loading,
+  token: state.auth.token,
+  userId: state.auth.userId
+});
 
-  const mapDispatchToProps = dispatch => {
-    return {
-      onOrderBurger: (orderData) => dispatch(actions.purchaseBurger(orderData)),
-    }
-    
-  }
+const mapDispatchToProps = dispatch => {
+  return {
+    onOrderBurger: (orderData, token) => dispatch(actions.purchaseBurger(orderData, token))
+  };
+};
 
-export default connect(mapstateToProps, mapDispatchToProps)(withErrorHandler(ContactData, axios));
+export default connect(
+  mapstateToProps,
+  mapDispatchToProps
+)(withErrorHandler(ContactData, axios));
