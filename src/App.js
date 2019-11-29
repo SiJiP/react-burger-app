@@ -24,18 +24,26 @@ class App extends Component {
   render(){
     let routes = (
       <Switch> 
-        <Route path="/auth" component={ (props) => <Suspense fallback={<Spinner />}> <Auth {...props} /> </Suspense> } />
+        <Route path="/auth" component={(props) => (<Suspense fallback={ <Spinner /> }> 
+                                                    <Auth {...props} /> 
+                                                   </Suspense>) } />
         <Route path="/"  exact component={ BurgerBuilder } />
         <Redirect to="/" />
       </Switch>
       )
     if (this.props.isAuthenticated) {
       routes = (
-        <Switch> 
-          <Route path="/orders" render={ (props) => <Suspense fallback={<Spinner />}> <Orders{...props} /> </Suspense> } />
-          <Route path="/checkout" component={ (props) => <Suspense fallback={<Spinner />}> <Checkout {...props}/> </Suspense> } />
-          <Route path="/logout" component={ Logout } />
-          <Route path="/auth" component={ (props) => <Suspense fallback={<Spinner />}> <Auth {...props}/> </Suspense> } />
+        <Switch>
+          <Route path="/logout" component={ Logout } /> 
+          <Route path="/orders" render={ (props) => (<Suspense fallback={ <Spinner /> }> 
+                                                      <Orders {...props} /> 
+                                                     </Suspense>) } />
+          <Route path="/checkout" component={ (props) => <Suspense fallback={ <Spinner /> }> 
+                                                          <Checkout {...props}/> 
+                                                         </Suspense> } />
+          <Route path="/auth" component={(props) => (<Suspense fallback={ <Spinner /> }> 
+                                                      <Auth {...props}/> 
+                                                     </Suspense>) } />
           <Route path="/"  exact component={ BurgerBuilder } />
           <Redirect to="/" />
        </Switch>
