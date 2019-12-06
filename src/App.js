@@ -1,4 +1,4 @@
-import React, { Component, Suspense } from 'react';
+import React, { useEffect, Suspense } from 'react';
 import { Route, Switch, withRouter, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
@@ -16,32 +16,35 @@ const Orders = React.lazy(() => import('./containers/Orders/Orders'));
 const Auth = React.lazy(() => import('./containers/Auth/Auth'));
 
 
-class App extends Component {
+const App = props => {
 
-  componentDidMount(){
-    this.props.onTryAutoSignUp()
-  }
-  render(){
+  const { onTryAutoSignUp } = props
+
+  useEffect(() => {
+   onTryAutoSignUp();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onTryAutoSignUp]);
+
     let routes = (
       <Switch> 
-        <Route path="/auth" component={(props) => (<Suspense fallback={ <Spinner /> }> 
+        <Route path="/auth" render={(props) => (<Suspense fallback={ <Spinner /> }> 
                                                     <Auth {...props} /> 
                                                    </Suspense>) } />
         <Route path="/"  exact component={ BurgerBuilder } />
         <Redirect to="/" />
       </Switch>
       )
-    if (this.props.isAuthenticated) {
+    if (props.isAuthenticated) {
       routes = (
         <Switch>
           <Route path="/logout" component={ Logout } /> 
           <Route path="/orders" render={ (props) => (<Suspense fallback={ <Spinner /> }> 
                                                       <Orders {...props} /> 
                                                      </Suspense>) } />
-          <Route path="/checkout" component={ (props) => <Suspense fallback={ <Spinner /> }> 
+          <Route path="/checkout" render={ (props) => <Suspense fallback={ <Spinner /> }> 
                                                           <Checkout {...props}/> 
                                                          </Suspense> } />
-          <Route path="/auth" component={(props) => (<Suspense fallback={ <Spinner /> }> 
+          <Route path="/auth" render={(props) => (<Suspense fallback={ <Spinner /> }> 
                                                       <Auth {...props}/> 
                                                      </Suspense>) } />
           <Route path="/"  exact component={ BurgerBuilder } />
@@ -57,7 +60,7 @@ class App extends Component {
         </Layout>
       </div>
     );
-  }
+
 }
 const mapStateToProps = state => {
   return {
@@ -71,4 +74,9 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps )(App));
+export default withRouter(
+  connect(
+    mapStateToProps, 
+    mapDispatchToProps 
+    )(App)
+  );
