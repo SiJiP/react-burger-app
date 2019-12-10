@@ -1,6 +1,8 @@
 import React from 'react';
-import classes from './BurgerIngredient.module.scss';
 import PropTypes from 'prop-types';
+
+import classes from './BurgerIngredient.module.scss';
+
 
 const BurgerIngredient = props => {
 

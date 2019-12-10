@@ -55,7 +55,9 @@ const Auth = props => {
     if (!buildingBurger && authRedirectPath !== '/'){
       onSetAuthRedirectPath('/');
     }
-  }, []);
+  }, [buildingBurger, 
+    authRedirectPath, 
+    onSetAuthRedirectPath]);
 
   const switchAuthModeHandler = () => {
     setIsSignUp(!isSignUp)
